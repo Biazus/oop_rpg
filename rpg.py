@@ -10,20 +10,15 @@ class Personagem:
 
     def atacar(self, oponente):
         dano = self.poder_ataque
-        oponente.receber_dano(dano)
-
-    def receber_dano(self, dano):
-        self.hp -= dano
-        if self.hp < 0:
-            self.hp = 0
+        oponente.hp -= dano
 
     def se_curar(self):
         self.hp = self.max_hp
-    
+
     def vivo(self):
         return self.hp > 0
-    
-    def to_dict(self):
+
+    def imprimida(self):
         return (f'Nome: {self.nome}\nHP:{self.hp}\nPA:{self.poder_ataque}\nXP:{self.xp}\nLevel:{self.nivel}')
 
 
@@ -47,40 +42,46 @@ class Monstro(Personagem):
         super().__init__(nome=nome, hp=hp, poder_ataque=poder_ataque, xp=None, nivel=None)
 
 
-def turno_aliado(aliado, monstro):
+class Luta:
+  def __init__(self, p1, p2) -> None:
+      self.personagem_aliado = p1
+      self.personagem_monstro = p2 or []
+
+  def turno_aliado(self, aliado, monstro):
     aliado.atacar(monstro)
     print('O aliado atacou')
 
 
-def turno_monstro(monstro, aliado):
+  def turno_monstro(self, monstro, aliado):
     monstro.atacar(aliado)
     print('O monstro atacou')
 
-
-def treta():
-    tungtungsahur = Aliado('tungtungsahur')
-    monstros = [
-        Monstro('tralalero_tralala', 40, 10),
-        Monstro('bailerina_capuccina', 25, 20)
-        ]
+  def start(self, aliado, monstros):
     for inimigo in monstros:
-        while tungtungsahur.vivo() and inimigo.vivo():
+        while aliado.vivo() and inimigo.vivo():
 
-            turno_aliado(tungtungsahur, inimigo)
+            self.turno_aliado(aliado, inimigo)
             if not inimigo.vivo():
-                tungtungsahur.se_curar()
-                tungtungsahur.xp += 1000
-                tungtungsahur.upar_level()
-                print(tungtungsahur.to_dict())
-                print('mosntro falecido')
+                aliado.se_curar()
+                aliado.xp += 100
+                aliado.upar_level()
+                print(aliado.imprimida())
+                print('monstro falecido')
                 break
 
-            turno_monstro(inimigo, tungtungsahur)
-            if not tungtungsahur.vivo():
+            self.turno_monstro(inimigo, aliado)
+            if not aliado.vivo():
                 print('aliado falicido')
                 break
 
         print("fim da treta")
 
 
-print(treta())
+tungtungsahur = Aliado('tungtungsahur')
+monstros = [
+        Monstro('tralalero_tralala', 40, 10),
+        Monstro('bailerina_capuccina', 25, 20)
+        ]
+
+teste = Luta(tungtungsahur, monstros)
+teste.start(tungtungsahur, monstros)
