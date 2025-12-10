@@ -38,20 +38,21 @@ class Aliado(Personagem):
 
 
 class Monstro(Personagem):
-    def __init__(self, nome, hp, poder_ataque):
+    def __init__(self, nome, hp, poder_ataque): #TODO não precisa declarar o init, pois ja ta imlementado na classe pai
         super().__init__(nome=nome, hp=hp, poder_ataque=poder_ataque, xp=None, nivel=None)
 
 
 class Luta:
   def __init__(self, p1, p2) -> None:
       self.personagem_aliado = p1
-      self.personagem_monstro = p2 or []
+      # TODO ou o atributo é uma lista de personagens ou um objeto Personagem. Mas tem q ser apenas de um tipo (evita bugs)
+      self.personagem_monstro = p2 or []  
 
   def turno_aliado(self, aliado, monstro):
     aliado.atacar(monstro)
     print('O aliado atacou')
 
-
+  #TODO da pra fazer na mesma função esse turno_aliado e turno_monstro, nao precisa ter duas
   def turno_monstro(self, monstro, aliado):
     monstro.atacar(aliado)
     print('O monstro atacou')
@@ -61,10 +62,15 @@ class Luta:
         while aliado.vivo() and inimigo.vivo():
 
             self.turno_aliado(aliado, inimigo)
-            if not inimigo.vivo():
+            # TODO tu pode mover esse if pra depois do while acho, ai tu nao precisa testar a cada iteraçao.
+            # ai dentro do while tu só deixa os turnos mesmo.
+            # na verdade tu nem precisa de if. É só depois do while tu chamar uma funcao progredir() ou 
+            # algo nesse sentido, e la tu testa se ele tiver vivo tu upa level e se tiver morto tu faz outra coisa
+            
+            if not inimigo.vivo():  
                 aliado.se_curar()
-                aliado.xp += 100
-                aliado.upar_level()
+                aliado.xp += 100  # TODO o ideal é cada monstro dar um certo valor de xp,e não ser uma xp fixa ne
+                aliado.upar_level()  # TODO tu ta curando o aliado nessa função e 2 linhas acima tb.
                 print(aliado.imprimida())
                 print('monstro falecido')
                 break
@@ -73,7 +79,6 @@ class Luta:
             if not aliado.vivo():
                 print('aliado falicido')
                 break
-
         print("fim da treta")
 
 
